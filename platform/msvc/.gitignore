@@ -1,0 +1,5 @@
+heightfield/
+projects/*
+
+!projects/heightfield.vcxproj
+!projects/heightfield.vcxproj.filters
