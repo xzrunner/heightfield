@@ -105,8 +105,8 @@ void HeightField::UpdateCPU() const
     rc.SetViewport(0, 0, m_width, m_height);
     assert(rc.CheckRenderTargetStatus());
 
-    uint8_t* pixels = new uint8_t[m_width * m_height];
-    rc.ReadPixels(pixels, 1, 0, 0, m_width, m_height);
+    uint8_t* pixels = new uint8_t[m_width * m_height * 4];
+    rc.ReadPixels(pixels, 4, 0, 0, m_width, m_height);
 
     rc.UnbindRenderTarget();
     rc.SetViewport(vp_x, vp_y, vp_w, vp_h);
@@ -114,7 +114,7 @@ void HeightField::UpdateCPU() const
 
     std::vector<float> heights(m_width * m_height);
     for (size_t i = 0, n = heights.size(); i < n; ++i) {
-        heights[i] = pixels[i] / 255.0f;
+        heights[i] = pixels[i * 4] / 255.0f;
     }
     delete[] pixels;
 
