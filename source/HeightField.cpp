@@ -94,8 +94,23 @@ void HeightField::UpdateCPU() const
 {
     auto& rc = ur::Blackboard::Instance()->GetRenderContext();
 
+    auto fbo = rc.CreateRenderTarget(0);
+    assert(fbo != 0);
+
+    int vp_x, vp_y, vp_w, vp_h;
+    rc.GetViewport(vp_x, vp_y, vp_w, vp_h);
+
+    rc.BindRenderTarget(fbo);
+    rc.BindRenderTargetTex(m_heightmap->TexID(), ur::ATTACHMENT_COLOR0);
+    rc.SetViewport(0, 0, m_width, m_height);
+    assert(rc.CheckRenderTargetStatus());
+
     uint8_t* pixels = new uint8_t[m_width * m_height];
     rc.ReadPixels(pixels, 1, 0, 0, m_width, m_height);
+
+    rc.UnbindRenderTarget();
+    rc.SetViewport(vp_x, vp_y, vp_w, vp_h);
+    rc.ReleaseRenderTarget(fbo);
 
     std::vector<float> heights(m_width * m_height);
     for (size_t i = 0, n = heights.size(); i < n; ++i) {
