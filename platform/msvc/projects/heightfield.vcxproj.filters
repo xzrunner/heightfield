@@ -2,8 +2,12 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClInclude Include="..\..\..\include\heightfield\Loader.h" />
+    <ClInclude Include="..\..\..\include\heightfield\HeightField.h" />
+    <ClInclude Include="..\..\..\include\heightfield\ScalarField2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Loader.cpp" />
+    <ClCompile Include="..\..\..\source\HeightField.cpp" />
+    <ClCompile Include="..\..\..\source\ScalarField2D.cpp" />
   </ItemGroup>
 </Project>

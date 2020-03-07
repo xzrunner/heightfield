@@ -3,6 +3,7 @@
 
 #include <gimg_import.h>
 #include <gimg_typedef.h>
+#include <gis/ElevationLoader.h>
 
 #include <boost/filesystem.hpp>
 
@@ -45,6 +46,18 @@ Loader::Load(const std::string& filepath)
             hf->SetValues(height);
         }
         fin.close();
+    }
+    else if (ext == ".hgt")
+    {
+        size_t width, height;
+        std::vector<int16_t> vals;
+        if (gis::ElevationLoader::Load(filepath, width, height, vals))
+        {
+            assert(width * height == vals.size());
+
+            hf = std::make_shared<hf::HeightField>(width, height);
+            hf->SetShortValues(vals);
+        }
     }
     else
     {

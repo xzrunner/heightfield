@@ -24,6 +24,9 @@ public:
 
     void SetCPUDirty() { m_cpu_dirty = true; }
 
+    void  SetShortValues(const std::vector<short>& values);
+    auto& GetShortValues() const { return m_short_values; }
+
 private:
     void UpdateCPU() const;
     void UpdateGPU() const;
@@ -32,6 +35,8 @@ private:
     mutable ur::TexturePtr m_heightmap = nullptr;
 
     mutable bool m_cpu_dirty = false;
+
+    std::vector<short> m_short_values;
 
 }; // HeightField
 

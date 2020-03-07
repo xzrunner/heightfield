@@ -90,6 +90,17 @@ float HeightField::Get(size_t idx) const
     }
 }
 
+void HeightField::SetShortValues(const std::vector<short>& values)
+{
+    if (m_width * m_height != values.size()) {
+        return;
+    }
+
+    m_short_values = values;
+
+    m_dirty = true;
+}
+
 void HeightField::UpdateCPU() const
 {
     auto& rc = ur::Blackboard::Instance()->GetRenderContext();
@@ -131,14 +142,22 @@ void HeightField::UpdateGPU() const
 
     m_heightmap = std::make_shared<ur::Texture>();
 
-    std::vector<unsigned char> pixels;
-    pixels.resize(m_values.size());
-    for (size_t i = 0, n = m_values.size(); i < n; ++i) {
-        const auto f01 = std::min(std::max(m_values[i], 0.0f), 1.0f);
-        pixels[i] = static_cast<unsigned char>(f01 * 255.0f);
-    }
+    if (m_short_values.empty())
+    {
+        std::vector<short> pixels;
+        pixels.resize(m_values.size());
+        for (size_t i = 0, n = m_values.size(); i < n; ++i) {
+            const auto f01 = std::min(std::max(m_values[i], 0.0f), 1.0f);
+            pixels[i] = static_cast<short>(f01 * 0xffff);
+        }
 
-    m_heightmap->Upload(&rc, m_width, m_height, ur::TEXTURE_RED, pixels.data());
+        m_heightmap->Upload(&rc, m_width, m_height, ur::TEXTURE_R16, pixels.data());
+    }
+    else
+    {
+        assert(m_short_values.size() == m_width * m_height);
+        m_heightmap->Upload(&rc, m_width, m_height, ur::TEXTURE_R16, m_short_values.data());
+    }
 }
 
 }
