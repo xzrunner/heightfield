@@ -9,23 +9,20 @@
 namespace hf
 {
 
-class HeightField : public ScalarField2D
+class HeightField : public ScalarField2D<int32_t>
 {
 public:
     HeightField(size_t width, size_t height);
 
     ur::TexturePtr GetHeightmap();
 
-    const std::vector<float>& GetValues() const;
+    const std::vector<int32_t>& GetValues() const;
 
-    float Get(size_t x, size_t y) const;
-    float Get(float x, float y) const;
-    float Get(size_t idx) const;
+    int32_t Get(size_t x, size_t y) const;
+    int32_t Get(float x, float y) const;
+    int32_t Get(size_t idx) const;
 
     void SetCPUDirty() { m_cpu_dirty = true; }
-
-    void  SetShortValues(const std::vector<short>& values);
-    auto& GetShortValues() const { return m_short_values; }
 
 private:
     void UpdateCPU() const;
@@ -35,8 +32,6 @@ private:
     mutable ur::TexturePtr m_heightmap = nullptr;
 
     mutable bool m_cpu_dirty = false;
-
-    std::vector<short> m_short_values;
 
 }; // HeightField
 

@@ -4,10 +4,14 @@
     <ClInclude Include="..\..\..\include\heightfield\Loader.h" />
     <ClInclude Include="..\..\..\include\heightfield\HeightField.h" />
     <ClInclude Include="..\..\..\include\heightfield\ScalarField2D.h" />
+    <ClInclude Include="..\..\..\include\heightfield\Utility.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\source\Loader.cpp" />
     <ClCompile Include="..\..\..\source\HeightField.cpp" />
-    <ClCompile Include="..\..\..\source\ScalarField2D.cpp" />
+    <ClCompile Include="..\..\..\source\Utility.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\..\..\include\heightfield\ScalarField2D.inl" />
   </ItemGroup>
 </Project>

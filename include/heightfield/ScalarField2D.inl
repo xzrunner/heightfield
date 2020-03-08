@@ -1,25 +1,28 @@
-#include "heightfield/ScalarField2D.h"
+#pragma once
 
 #include <assert.h>
 
 namespace hf
 {
 
-ScalarField2D::ScalarField2D(size_t width, size_t height)
+template <typename T>
+ScalarField2D<T>::ScalarField2D(size_t width, size_t height)
     : m_width(width)
     , m_height(height)
 {
     m_values.resize(m_width * m_height, 0);
 }
 
-ScalarField2D::ScalarField2D(size_t width, size_t height, float val)
+template <typename T>
+ScalarField2D<T>::ScalarField2D(size_t width, size_t height, T val)
     : m_width(width)
     , m_height(height)
 {
     m_values.resize(m_width * m_height, val);
 }
 
-void ScalarField2D::SetValues(const std::vector<float>& values) const
+template <typename T>
+void ScalarField2D<T>::SetValues(const std::vector<T>& values) const
 {
     if (m_width * m_height != values.size()) {
         return;
@@ -31,7 +34,8 @@ void ScalarField2D::SetValues(const std::vector<float>& values) const
     m_dirty = true;
 }
 
-bool ScalarField2D::Set(size_t x, size_t y, float h)
+template <typename T>
+bool ScalarField2D<T>::Set(size_t x, size_t y, T h)
 {
     const size_t idx = y * m_width + x;
     if (idx >= m_values.size()) {
@@ -44,7 +48,8 @@ bool ScalarField2D::Set(size_t x, size_t y, float h)
     }
 }
 
-float ScalarField2D::Get(size_t x, size_t y) const
+template <typename T>
+T ScalarField2D<T>::Get(size_t x, size_t y) const
 {
     const size_t idx = y * m_width + x;
     if (idx >= m_values.size()) {
@@ -55,7 +60,8 @@ float ScalarField2D::Get(size_t x, size_t y) const
     }
 }
 
-bool ScalarField2D::Add(size_t x, size_t y, float dh)
+template <typename T>
+bool ScalarField2D<T>::Add(size_t x, size_t y, T dh)
 {
     if (x < 0 || x >= m_width ||
         y < 0 || y >= m_height) {
@@ -69,7 +75,8 @@ bool ScalarField2D::Add(size_t x, size_t y, float dh)
     return true;
 }
 
-bool ScalarField2D::Add(size_t idx, float dh)
+template <typename T>
+bool ScalarField2D<T>::Add(size_t idx, T dh)
 {
     if (idx >= m_values.size()) {
         assert(0);
@@ -82,7 +89,8 @@ bool ScalarField2D::Add(size_t idx, float dh)
     return true;
 }
 
-bool ScalarField2D::Inside(int x, int y) const
+template <typename T>
+bool ScalarField2D<T>::Inside(int x, int y) const
 {
     if (x < 0 || x >= static_cast<int>(m_width) ||
         y < 0 || y >= static_cast<int>(m_height)) {
@@ -92,35 +100,12 @@ bool ScalarField2D::Inside(int x, int y) const
     }
 }
 
-void ScalarField2D::Scale(float scale)
+template <typename T>
+void ScalarField2D<T>::Scale(float scale)
 {
     for (auto& v : m_values) {
         v *= scale;
     }
-    m_dirty = true;
-}
-
-void ScalarField2D::Normalize()
-{
-    float min = std::numeric_limits<float>::max();
-    float max = std::numeric_limits<float>::min();
-    for (auto& v : m_values)
-    {
-        if (v < min) {
-            min = v;
-        }
-        if (v > max) {
-            max = v;
-        }
-    }
-    if (min == max) {
-        return;
-    }
-
-    for (auto& v : m_values) {
-        v = (v - min) / (max - min);
-    }
-
     m_dirty = true;
 }
 

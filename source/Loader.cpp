@@ -1,5 +1,6 @@
 #include "heightfield/Loader.h"
 #include "heightfield/HeightField.h"
+#include "heightfield/Utility.h"
 
 #include <gimg_import.h>
 #include <gimg_typedef.h>
@@ -37,9 +38,9 @@ Loader::Load(const std::string& filepath)
             size_t size = static_cast<size_t>(std::sqrt(sz));
             assert(size * size == sz);
 
-            std::vector<float> height(sz, 0.0f);
+            std::vector<int32_t> height(sz, 0);
             for (size_t i = 0; i < sz; ++i) {
-                height[i] = static_cast<unsigned char>(pixels[i]) / 255.0f;
+                height[i] = Utility::HeightCharToShort(pixels[i]);
             }
 
             hf = std::make_shared<hf::HeightField>(size, size);
@@ -55,8 +56,13 @@ Loader::Load(const std::string& filepath)
         {
             assert(width * height == vals.size());
 
+            std::vector<int32_t> heights(vals.size());
+            for (size_t i = 0, n = vals.size(); i < n; ++i) {
+                heights[i] = vals[i];
+            }
+
             hf = std::make_shared<hf::HeightField>(width, height);
-            hf->SetShortValues(vals);
+            hf->SetValues(heights);
         }
     }
     else
@@ -68,24 +74,24 @@ Loader::Load(const std::string& filepath)
         }
 
         size_t sz = width * height;
-        std::vector<float> h_data(sz, 0.0f);
+        std::vector<int32_t> h_data(sz, 0);
         switch (format)
         {
         case GPF_ALPHA:
         case GPF_LUMINANCE:
         case GPF_LUMINANCE_ALPHA:
             for (size_t i = 0; i < sz; ++i) {
-                h_data[i] = pixels[i] / 255.0f;
+                h_data[i] = Utility::HeightUCharToShort(pixels[i]);
             }
             break;
         case GPF_RGB:
             for (size_t i = 0; i < sz; ++i) {
-                h_data[i] = pixels[i * 3] / 255.0f;
+                h_data[i] = Utility::HeightUCharToShort(pixels[i * 3]);
             }
             break;
         case GPF_RGBA8:
             for (size_t i = 0; i < sz; ++i) {
-                h_data[i] = pixels[i * 4] / 255.0f;
+                h_data[i] = Utility::HeightUCharToShort(pixels[i * 4]);
             }
             break;
         default:
