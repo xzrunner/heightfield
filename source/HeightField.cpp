@@ -15,7 +15,7 @@ HeightField::HeightField(size_t width, size_t height)
 {
 }
 
-ur::TexturePtr HeightField::GetHeightmap()
+ur::TexturePtr HeightField::GetHeightmap() const
 {
     if (!m_heightmap || m_dirty) {
         UpdateGPU();

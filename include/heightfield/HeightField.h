@@ -14,7 +14,7 @@ class HeightField : public ScalarField2D<int32_t>
 public:
     HeightField(size_t width, size_t height);
 
-    ur::TexturePtr GetHeightmap();
+    ur::TexturePtr GetHeightmap() const;
 
     const std::vector<int32_t>& GetValues() const;
 
