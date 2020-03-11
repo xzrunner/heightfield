@@ -11,7 +11,7 @@ double Utility::HeightShortToDouble(int32_t s)
     auto smax = std::numeric_limits<short>::max();
     auto dmin = -1.0;
     auto dmax = 1.0;
-    return (s - smin) / (smax - smin) * (dmax - dmin) + dmin;
+    return static_cast<double>(s - smin) / (smax - smin) * (dmax - dmin) + dmin;
 }
 
 float Utility::HeightShortToFloat(int32_t s)
