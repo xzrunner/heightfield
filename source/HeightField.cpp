@@ -1,11 +1,11 @@
 #include "heightfield/HeightField.h"
 
-#include <unirender2/Texture.h>
-#include <unirender2/Device.h>
-#include <unirender2/Context.h>
-#include <unirender2/Framebuffer.h>
-#include <unirender2/Factory.h>
-#include <unirender2/TextureDescription.h>
+#include <unirender/Texture.h>
+#include <unirender/Device.h>
+#include <unirender/Context.h>
+#include <unirender/Framebuffer.h>
+#include <unirender/Factory.h>
+#include <unirender/TextureDescription.h>
 
 #include <algorithm>
 
@@ -19,7 +19,7 @@ HeightField::HeightField(size_t width, size_t height)
 {
 }
 
-ur2::TexturePtr HeightField::GetHeightmap(const ur2::Device& dev) const
+ur::TexturePtr HeightField::GetHeightmap(const ur::Device& dev) const
 {
     if (!m_heightmap || m_dirty) {
         UpdateGPU(dev);
@@ -29,7 +29,7 @@ ur2::TexturePtr HeightField::GetHeightmap(const ur2::Device& dev) const
     return m_heightmap;
 }
 
-const std::vector<int32_t>& HeightField::GetValues(const ur2::Device& dev) const
+const std::vector<int32_t>& HeightField::GetValues(const ur::Device& dev) const
 {
     if (m_cpu_dirty) {
         UpdateCPU(dev);
@@ -38,7 +38,7 @@ const std::vector<int32_t>& HeightField::GetValues(const ur2::Device& dev) const
     return m_values;
 }
 
-int32_t HeightField::Get(const ur2::Device& dev, size_t x, size_t y) const
+int32_t HeightField::Get(const ur::Device& dev, size_t x, size_t y) const
 {
     if (m_cpu_dirty) {
         UpdateCPU(dev);
@@ -53,7 +53,7 @@ int32_t HeightField::Get(const ur2::Device& dev, size_t x, size_t y) const
     }
 }
 
-int32_t HeightField::Get(const ur2::Device& dev, float x, float y) const
+int32_t HeightField::Get(const ur::Device& dev, float x, float y) const
 {
     if (m_cpu_dirty) {
         UpdateCPU(dev);
@@ -79,7 +79,7 @@ int32_t HeightField::Get(const ur2::Device& dev, float x, float y) const
     return static_cast<int32_t>((h00 * (1 - dx) + h10 * dx) * (1 - dy) + (h01 * (1 - dx) + h11 * dx) * dy);
 }
 
-int32_t HeightField::Get(const ur2::Device& dev, size_t idx) const
+int32_t HeightField::Get(const ur::Device& dev, size_t idx) const
 {
     if (m_cpu_dirty) {
         UpdateCPU(dev);
@@ -94,14 +94,14 @@ int32_t HeightField::Get(const ur2::Device& dev, size_t idx) const
     }
 }
 
-void HeightField::UpdateCPU(const ur2::Device& dev) const
+void HeightField::UpdateCPU(const ur::Device& dev) const
 {
-    auto ctx = ur2::CreateContextGL(dev);
+    auto ctx = ur::CreateContextGL(dev);
 
     auto fbo = dev.CreateFramebuffer();
     fbo->Bind();
 
-    fbo->SetAttachment(ur2::AttachmentType::Color0, ur2::TextureTarget::Texture2D, m_heightmap, nullptr);
+    fbo->SetAttachment(ur::AttachmentType::Color0, ur::TextureTarget::Texture2D, m_heightmap, nullptr);
 
     //int vp_x, vp_y, vp_w, vp_h;
     //rc.GetViewport(vp_x, vp_y, vp_w, vp_h);
@@ -109,7 +109,7 @@ void HeightField::UpdateCPU(const ur2::Device& dev) const
     ctx->SetViewport(0, 0, m_width, m_height);
 
     int16_t* pixels = new int16_t[m_width * m_height * 4];
-    dev.ReadPixels(pixels, ur2::TextureFormat::RGBA8, 0, 0, m_width, m_height);
+    dev.ReadPixels(pixels, ur::TextureFormat::RGBA8, 0, 0, m_width, m_height);
 
     //rc.UnbindRenderTarget();
     //rc.SetViewport(vp_x, vp_y, vp_w, vp_h);
@@ -124,7 +124,7 @@ void HeightField::UpdateCPU(const ur2::Device& dev) const
     SetValues(heights);
 }
 
-void HeightField::UpdateGPU(const ur2::Device& dev) const
+void HeightField::UpdateGPU(const ur::Device& dev) const
 {
     if (m_width == 0 || m_height == 0) {
         return;
@@ -140,11 +140,11 @@ void HeightField::UpdateGPU(const ur2::Device& dev) const
         dst[i] = std::min(max, std::max(src[i], min));
     }
 
-    ur2::TextureDescription desc;
-    desc.target = ur2::TextureTarget::Texture2D;
+    ur::TextureDescription desc;
+    desc.target = ur::TextureTarget::Texture2D;
     desc.width = m_width;
     desc.height = m_height;
-    desc.format = ur2::TextureFormat::R16;
+    desc.format = ur::TextureFormat::R16;
     m_heightmap = dev.CreateTexture(desc, dst.data());
 }
 
