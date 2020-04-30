@@ -99,7 +99,7 @@ void HeightField::UpdateCPU(const ur::Device& dev) const
     auto ctx = ur::CreateContextGL(dev);
 
     auto fbo = dev.CreateFramebuffer();
-    fbo->Bind();
+    //fbo->Bind();
 
     fbo->SetAttachment(ur::AttachmentType::Color0, ur::TextureTarget::Texture2D, m_heightmap, nullptr);
 
