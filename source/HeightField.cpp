@@ -96,7 +96,7 @@ int32_t HeightField::Get(const ur::Device& dev, size_t idx) const
 
 void HeightField::UpdateCPU(const ur::Device& dev) const
 {
-    auto ctx = ur::CreateContextGL(dev);
+    auto ctx = ur::CreateContext(ur::APIType::OpenGL, dev);
 
     auto fbo = dev.CreateFramebuffer();
     //fbo->Bind();
