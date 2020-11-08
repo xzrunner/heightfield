@@ -28,7 +28,7 @@ private:
         auto smax = std::numeric_limits<T>::max();
         auto dmin = std::numeric_limits<short>::min();
         auto dmax = std::numeric_limits<short>::max();
-        return (c - smin) / (smax - smin) * (dmax - dmin) + dmin;
+        return static_cast<float>(c - smin) / (smax - smin) * (dmax - dmin) + dmin;
     }
 
 }; // Utility
