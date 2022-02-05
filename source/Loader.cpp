@@ -4,7 +4,6 @@
 
 #include <gimg_import.h>
 #include <gimg_typedef.h>
-#include <gis/ElevationLoader.h>
 
 #include <boost/filesystem.hpp>
 
@@ -48,23 +47,6 @@ Loader::Load(const std::string& filepath)
         }
         fin.close();
     }
-    else if (ext == ".hgt")
-    {
-        size_t width, height;
-        std::vector<int16_t> vals;
-        if (gis::ElevationLoader::Load(filepath, width, height, vals))
-        {
-            assert(width * height == vals.size());
-
-            std::vector<int32_t> heights(vals.size());
-            for (size_t i = 0, n = vals.size(); i < n; ++i) {
-                heights[i] = vals[i];
-            }
-
-            hf = std::make_shared<hf::HeightField>(width, height);
-            hf->SetValues(heights);
-        }
-    }
     else
     {
 	    int width, height, format;
@@ -93,6 +75,14 @@ Loader::Load(const std::string& filepath)
             for (size_t i = 0; i < sz; ++i) {
                 h_data[i] = Utility::HeightUCharToShort(pixels[i * 4]);
             }
+            break;
+        case GPF_R16:
+        {
+            uint16_t* pixels16 = (uint16_t*)pixels;
+            for (size_t i = 0; i < sz; ++i) {
+                h_data[i] = pixels16[i];
+            }
+        }
             break;
         default:
             assert(0);
