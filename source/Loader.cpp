@@ -88,6 +88,8 @@ Loader::Load(const std::string& filepath)
             assert(0);
         }
 
+        free(pixels);
+
         hf = std::make_shared<hf::HeightField>(width, height);
         hf->SetValues(h_data);
     }
